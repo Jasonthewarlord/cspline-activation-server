@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>License Key Management</h2>
+    
+    <div style="margin: 20px 0;">
+        <button onclick="showGenerateForm()" class="btn btn-success">Generate New Keys</button>
+        <a href="{{ url_for('index') }}" class="btn">Back to Dashboard</a>
+    </div>
+    
+    <div id="generate-form" style="display: none; margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 5px;">
+        <h4>Generate New License Keys</h4>
+        <form action="{{ url_for('generate_keys') }}" method="POST">
+            <div class="form-group">
+                <label for="count">Number of keys:</label>
+                <input type="number" id="count" name="count" value="1" min="1" max="100">
+            </div>
+            <div class="form-group">
+                <label for="notes">Notes:</label>
+                <input type="text" id="notes" name="notes" placeholder="e.g., Customer batch, promotion keys">
+            </div>
+            <button type="submit" class="btn btn-success">Generate</button>
+            <button type="button" onclick="hideGenerateForm()" class="btn">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <h3>All License Keys ({{ keys|length }} total)</h3>
+    
+    {% if keys %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>License Key</th>
+                <th>Status</th>
+                <th>User</th>
+                <th>Machine ID</th>
+                <th>Created</th>
+                <th>Claimed</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key in keys %}
+            <tr>
+                <td class="machine-id">{{ key[1] }}</td>
+                <td>
+                    <span class="status-{{ key[5] }}">
+                        {{ key[5].upper() }}
+                    </span>
+                </td>
+                <td>
+                    {% if key[2] %}
+                        {{ key[3] }}<br>
+                        <small style="color: #7f8c8d;">{{ key[2] }}</small>
+                    {% else %}
+                        <em>Not activated</em>
+                    {% endif %}
+                </td>
+                <td class="machine-id">
+                    {% if key[4] %}
+                        {{ key[4] }}
+                    {% else %}
+                        <em>None</em>
+                    {% endif %}
+                </td>
+                <td>{{ key[7] }}</td>
+                <td>
+                    {% if key[6] %}
+                        {{ key[6] }}
+                    {% else %}
+                        <em>Not claimed</em>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if key[5] == 'claimed' %}
+                        <form method="POST" action="{{ url_for('reset_license') }}" style="display: inline;">
+                            <input type="hidden" name="key_id" value="{{ key[0] }}">
+                            <button type="submit" class="btn btn-danger" 
+                                    onclick="return confirm('Reset this license key? This will allow it to be used again.')">
+                                Reset
+                            </button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No license keys found. Generate some keys to get started.</p>
+    {% endif %}
+</div>
+
+<script>
+function showGenerateForm() {
+    document.getElementById('generate-form').style.display = 'block';
+}
+
+function hideGenerateForm() {
+    document.getElementById('generate-form').style.display = 'none';
+}
+</script>
+{% endblock %}

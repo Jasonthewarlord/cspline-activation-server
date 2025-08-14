@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login - CSpline Activation Server{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 400px; margin: 50px auto;">
+    <h2 style="text-align: center; margin-bottom: 20px;">Admin Login</h2>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        
+        <div style="text-align: center;">
+            <button type="submit" class="btn">Login</button>
+        </div>
+    </form>
+    
+    <div style="margin-top: 20px; text-align: center; color: #7f8c8d; font-size: 0.9em;">
+        Default password: admin123 (change via ADMIN_PASSWORD environment variable)
+    </div>
+</div>
+{% endblock %}

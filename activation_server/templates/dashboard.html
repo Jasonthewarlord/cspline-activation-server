@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>Dashboard</h2>
+    
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-number">{{ total_keys }}</div>
+            <div class="stat-label">Total Keys</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">{{ used_keys }}</div>
+            <div class="stat-label">Used Keys</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">{{ unused_keys }}</div>
+            <div class="stat-label">Available Keys</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">{{ total_activations }}</div>
+            <div class="stat-label">Total Activations</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Quick Actions</h3>
+    <div style="margin-top: 15px;">
+        <a href="{{ url_for('manage_keys') }}" class="btn">Manage License Keys</a>
+        <button onclick="showGenerateForm()" class="btn btn-success">Generate New Keys</button>
+    </div>
+    
+    <div id="generate-form" style="display: none; margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 5px;">
+        <form action="{{ url_for('generate_keys') }}" method="POST">
+            <div class="form-group">
+                <label for="count">Number of keys to generate:</label>
+                <input type="number" id="count" name="count" value="1" min="1" max="100">
+            </div>
+            <div class="form-group">
+                <label for="notes">Notes (optional):</label>
+                <input type="text" id="notes" name="notes" placeholder="e.g., Batch for reseller XYZ">
+            </div>
+            <button type="submit" class="btn btn-success">Generate Keys</button>
+            <button type="button" onclick="hideGenerateForm()" class="btn">Cancel</button>
+        </form>
+    </div>
+</div>
+
+{% if recent_activations %}
+<div class="card">
+    <h3>Recent Activations</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Machine ID</th>
+                <th>Activated At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for activation in recent_activations %}
+            <tr>
+                <td>{{ activation[0] }}</td>
+                <td>{{ activation[1] }}</td>
+                <td class="machine-id">{{ activation[2] }}</td>
+                <td>{{ activation[3] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<script>
+function showGenerateForm() {
+    document.getElementById('generate-form').style.display = 'block';
+}
+
+function hideGenerateForm() {
+    document.getElementById('generate-form').style.display = 'none';
+}
+</script>
+{% endblock %}
